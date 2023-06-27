@@ -1,0 +1,9 @@
+2004-05-30 -------- Sunday - 30th May,  2004
+    PSO.m:
+	-Incorported the changes suggested by Konstantinos E. Parsopoulos at Line 165.
+	 (For details about the bug in alpha 0.2, please read - http://www.particleswarm.info/pso_toolbox_error.html)
+2003-07-14 -------- Monday - 14th July, 2003
+    RunExp.m:
+        -Changed script into a function.
+        -Coded to accept the numberofRuns as an Argument.
+        -Added code for automatic Exit from Matlab and Shutdown of WindowsPC.

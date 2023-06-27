@@ -1,0 +1,11 @@
+* Using RETAIN and sum statements to find most runs and total runs;
+data gamestats;
+infile 'c:\MyRawData\Games.dat';
+input Month 1 Day 3-4 Team $ 6-25 Hits 27-28 Runs 30-31;
+retain MaxRuns;
+MaxRuns = MAX(MaxRuns, Runs);
+RunsToDate + Runs;
+run;
+proc print data = gamestats;
+title "Season's Record to Date";
+run;

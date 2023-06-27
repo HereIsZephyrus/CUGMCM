@@ -1,0 +1,23 @@
+proc import datafile = 'C:\MyRawData\sh600000.csv' DBMS=CSV OUT = sh600000 REPLACE;
+getnames = YES;
+datarow = 2;
+run;
+data sh600000_2014;
+set sh600000;
+keep date open high low close;
+where '1Jan2014'D <= date <= '31Dec2014'D;
+proc sort data = sh600000_2014;
+by date;
+run;
+proc print data = sh600000_2014;
+title 'sh600000股票2014年的数据';
+run;
+proc sgplot data = sh600000_2014;
+series X = date Y = open / name = 'kaipan' legendlabel='开盘价';
+series X = date Y = close / name = 'shoupan' legendlabel='收盘价';
+title '股票(sh600000)2014年开盘价、收盘价的变化趋势';
+keylegend 'kaipan' 'shoupan' / LOCATION = INSIDE POSITION = TOP;
+xaxis label = '日期';
+yaxis label = '股票价格(元）';
+run;
+

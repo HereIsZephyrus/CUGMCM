@@ -1,0 +1,723 @@
+所述，PSO模拟鸟群的捕食行为。设想这样一个场景：一群鸟在随机搜索食物。在这个区域里只有一块食物。所有的鸟都不知道食物在那里。但是他们知道当前的位置离食物还有多远。那么找到食物的最优策略是什么呢。最简单有效的就是搜寻目前离食物最近的鸟的周围区域。 
+
+　　PSO从这种模型中得到启示并用于解决优化问题。PSO中，每个优化问题的解都是搜索空间中的一只鸟。我们称之为“粒子”。所有的粒子都有一个由被优化的函数决定的适应值(fitness value)，每个粒子还有一个速度决定他们飞翔的方向和距离。然后粒子们就追随当前的最优粒子在解空间中搜索。 
+
+
+　　PSO 初始化为一群随机粒子(随机解)。然后通过迭代找到最优解。在每一次迭代中，粒子通过跟踪两个"极值"来更新自己。第一个就是粒子本身所找到的最优解，这个解叫做个体极值pBest。另一个极值是整个种群目前找到的最优解，这个极值是全局极值gBest。另外也可以不用整个种群而只是用其中一部分作为粒子的邻居，那么在所有邻居中的极值就是局部极值。 
+
+
+　　在找到这两个最优值时，粒子根据如下的公式来更新自己的速度和新的位置：
+
+
+　　v[] = w * v[] + c1 * rand() * (pbest[] - present[]) + c2 * rand() * (gbest[] - present[])            (a) 
+
+
+　　present[] = persent[] + v[]                                                                                                  (b) 
+
+
+　　v[] 是粒子的速度, w是惯性权重,persent[] 是当前粒子的位置. pbest[] and gbest[] 如前定义 rand () 是介于（0， 1）之间的随机数. c1, c2 是学习因子. 通常 c1 = c2 = 2. 
+
+
+　　程序的伪代码如下 
+
+
+　　For each particle 
+
+
+　　____Initialize particle 
+
+
+　　END 
+
+
+　　Do 
+
+
+　　____For each particle 
+
+
+　　________Calculate fitness value 
+
+
+　　________If the fitness value is better than the best fitness value (pBest) in history 
+
+
+　　____________set current value as the new pBest 
+
+
+　　____End 
+
+
+　　____Choose the particle with the best fitness value of all the particles as the gBest 
+
+
+　　____For each particle 
+
+
+　　________Calculate particle velocity according equation (a) 
+
+
+　　________Update particle position according equation (b) 
+
+
+　　____End 
+
+
+　　While maximum iterations or minimum error criteria is not attained 
+
+
+　　在每一维粒子的速度都会被限制在一个最大速度Vmax，如果某一维更新后的速度超过用户设定的Vmax，那么这一维的速度就被限定为Vmax
+
+[遗传算法和 PSO 的比较]
+
+　大多数演化计算技术都是用同样的过程 ：
+
+　　1. 种群随机初始化 
+
+　　2. 对种群内的每一个个体计算适应值(fitness value).适应值与最优解的距离直接有关 
+
+　　3. 种群根据适应值进行复制 
+
+　　4. 如果终止条件满足的话，就停止，否则转步骤2 
+
+　　从以上步骤，我们可以看到PSO和GA有很多共同之处。两者都随机初始化种群，而且都使用适应值来评价系统，而且都根据适应值来进行一定的随机搜索。两个系统都不是保证一定找到最优解 。
+
+　　但是，PSO 没有遗传操作如交叉(crossover)和变异(mutation). 而是根据自己的速度来决定搜索。粒子还有一个重要的特点，就是有记忆。 
+
+　　与遗传算法比较, PSO 的信息共享机制是很不同的. 在遗传算法中，染色体(chromosomes) 互相共享信息，所以整个种群的移动是比较均匀的向最优区域移动. 在PSO中, 只有gBest (or lBest) 给出信息给其他的粒子，这是单向的信息流动. 整个搜索更新过程是跟随当前最优解的过程. 与遗传算法比较, 在大多数的情况下，所有的粒子可能更快的收敛于最优解
+
+[人工神经网络 和 PSO　]　
+
+       神经网络(ANN)是模拟大脑分析过程的简单数学模型，反向转播算法是最流行的神经网络训练算法。进来也有很多研究开始利用演化计算(evolutionary computation)技术来研究人工神经网络的各个方面。 
+
+　　演化计算可以用来研究神经网络的三个方面：网络连接权重，网络结构(网络拓扑结构，传递函数)，网络学习算法。 
+
+　　不过大多数这方面的工作都集中在网络连接权重，和网络拓扑结构上。在GA中，网络权重和/或拓扑结构一般编码为染色体(Chromosome)，适应函数(fitness function)的选择一般根据研究目的确定。例如在分类问题中，错误分类的比率可以用来作为适应值 
+
+　　演化计算的优势在于可以处理一些传统方法不能处理的例子例如不可导的节点传递函数或者没有梯度信息存在。但是缺点在于：在某些问题上性能并不是特别好。2. 网络权重的编码而且遗传算子的选择有时比较麻烦 
+
+　　最近已经有一些利用PSO来代替反向传播算法来训练神经网络的论文。研究表明PSO 是一种很有潜力的神经网络算法。PSO速度比较快而且可以得到比较好的结果。而且还没有遗传算法碰到的问题 
+
+　　这里用一个简单的例子说明PSO训练神经网络的过程。这个例子使用分类问题的基准函数(Benchmark function)IRIS数据集。(Iris 是一种鸢尾属植物) 在数据记录中，每组数据包含Iris花的四种属性：萼片长度，萼片宽度，花瓣长度，和花瓣宽度，三种不同的花各有50组数据. 这样总共有150组数据或模式。 
+
+　　我们用3层的神经网络来做分类。现在有四个输入和三个输出。所以神经网络的输入层有4个节点，输出层有3个节点我们也可以动态调节隐含层节点的数目，不过这里我们假定隐含层有6个节点。我们也可以训练神经网络中其他的参数。不过这里我们只是来确定网络权重。粒子就表示神经网络的一组权重，应该是4*6+6*3=42个参数。权重的范围设定为[-100，100] (这只是一个例子，在实际情况中可能需要试验调整).在完成编码以后，我们需要确定适应函数。对于分类问题，我们把所有的数据送入神经网络，网络的权重有粒子的参数决定。然后记录所有的错误分类的数目作为那个粒子的适应值。现在我们就利用PSO来训练神经网络来获得尽可能低的错误分类数目。PSO本身并没有很多的参数需要调整。所以在实验中只需要调整隐含层的节点数目和权重的范围以取得较好的分类效果。
+
+[PSO的参数设置]　
+
+       面的例子我们可以看到应用PSO解决优化问题的过程中有两个重要的步骤: 问题解的编码和适应度函数 
+
+　　PSO的一个优势就是采用实数编码, 不需要像遗传算法一样是二进制编码(或者采用针对实数的遗传操作.例如对于问题 f(x) = x1^2 + x2^2+x3^2 求解, 粒子可以直接编码为 (x1, x2, x3), 而适应度函数就是f(x). 接着我们就可以利用前面的过程去寻优.这个寻优过程是一个叠代过程, 中止条件一般为设置为达到最大循环数或者最小错误 
+
+　　PSO中并没有许多需要调节的参数,下面列出了这些参数以及经验设置 
+
+　　粒子数: 一般取 20 – 40. 其实对于大部分的问题10个粒子已经足够可以取得好的结果, 不过对于比较难的问题或者特定类别的问题, 粒子数可以取到100 或 200 
+
+　　粒子的长度: 这是由优化问题决定, 就是问题解的长度 
+
+　　粒子的范围: 由优化问题决定,每一维可是设定不同的范围 
+
+　　Vmax: 最大速度,决定粒子在一个循环中最大的移动距离,通常设定为粒子的范围宽度,例如上面的例子里,粒子 (x1, x2, x3) x1 属于 [-10, 10], 那么 Vmax 的大小就是 20 
+
+　  习因子: c1 和 c2 通常等于 2. 不过在文献中也有其他的取值. 但是一般 c1 等于 c2 并且范围在0和4之间 
+
+　　中止条件: 最大循环数以及最小错误要求. 例如, 在上面的神经网络训练例子中, 最小错误可以设定为1个错误分类, 最大循环设定为2000, 这个中止条件由具体的问题确定. 
+
+　　全局PSO和局部PSO: 我们介绍了两种版本的粒子群优化算法: 全局版和局部版. 前者速度快不过有时会陷入局部最优. 后者收敛速度慢一点不过很难陷入局部最优. 在实际应用中, 可以先用全局PSO找到大致的结果,再有局部PSO进行搜索. 
+
+　　另外的一个参数是惯性权重, Shi 和Eberhart指出(A modified particle swarm optimizer,1998)：当Vmax很小时（对schaffer的f6函数，Vmax<=2),使用接近于1的惯性权重;当Vmax不是很小时（对schaffer的f6函数，Vmax>=3),使用权重w=0.8较好.如果没有Vmax的信息,使用0.8作为权重也是一种很好的选择.另外,对于使用时变的权重,结果不清楚,但是预计结果应比较好.
+
+　　附上一个C++实现的C++代码：
+
+　　代码来自2008年数学建模东北赛区B题
+
+　　#include "stdafx.h"
+
+　　#include <math.h>
+
+　　#include <time.h>
+
+　　#include <iostream>
+
+　　#include <fstream>
+
+　　using namespace std;
+
+　　int c1=2; //加速因子
+
+　　int c2=2; //加速因子
+
+　　double w=1; //惯性权重
+
+　　double Wmax=1; //最大惯性权重
+
+　　double Wmin=0.6; //最小惯性权重
+
+　　int Kmax=110; //迭代次数
+
+　　int GdsCnt; //物资总数
+
+　　int const Dim=10; //粒子维数
+
+　　int const PNum=50; //粒子个数
+
+　　int GBIndex=0; //最优粒子索引
+
+　　double a=0.6; //适应度调整因子
+
+　　double b=0.5; //适应度调整因子
+
+　　int Xup[Dim]; //粒子位置上界数组
+
+　　int Xdown[Dim]=; //粒子位置下界数组
+
+　　int Value[Dim]; //初始急需度数组
+
+　　int Vmax[Dim]; //最大速度数组
+
+　　class PARTICLE; //申明粒子节点
+
+　　void Check(PARTICLE&,int); //约束函数
+
+　　void Input(ifstream&); //输入变量
+
+　　void Initial(); //初始化相关变量
+
+　　double GetFit(PARTICLE&); //计算适应度
+
+　　void CalculateFit(); //计算适应度
+
+　　void BirdsFly(); //粒子飞翔
+
+　　void Run(ofstream&,int=2000); //运行函数
+
+　　//微粒类
+
+　　class PARTICLE
+
+　　{
+
+
+　　public:
+
+
+　　int X[Dim]; //微粒的坐标数组
+
+
+　　int XBest[Dim]; //微粒的最好位置数组
+
+
+　　int V[Dim]; //粒子速度数组
+
+
+　　double Fit; //微粒适合度
+
+
+　　double FitBest; //微粒最好位置适合度
+
+
+　　};
+
+
+　　PARTICLE Parr[PNum]; //粒子数组
+
+
+　　int main() //主函数
+
+
+　　{
+
+
+　　ofstream outf("out.txt");
+
+
+　　ifstream inf("data.txt"); //关联输入文件
+
+
+　　inf>>GdsCnt; //输入物资总数
+
+
+　　Input(inf);
+
+
+　　Initial();
+
+
+　　Run(outf,100);
+
+
+　　system("pause");
+
+
+　　return 0;
+
+
+　　}
+
+
+　　void Check(PARTICLE& p,int count)//参数:p粒子对象,count物资数量
+
+
+　　{
+
+
+　　srand((unsigned)time(NULL));
+
+
+　　int sum=0;
+
+
+　　for (int i=0;i<Dim;i++)
+
+
+　　{
+
+
+　　if (p.X>Xup)
+
+
+　　{
+
+
+　　p.X=Xup;
+
+
+　　}
+
+
+　　else if (p.X<Xdown)
+
+
+　　{
+
+
+　　p.X=Xdown;
+
+
+　　}
+
+
+　　if (p.V>Vmax)
+
+
+　　{
+
+
+　　p.V=Vmax;
+
+
+　　}
+
+
+　　else if (p.V<0)
+
+
+　　{
+
+
+　　p.V=0;
+
+
+　　}
+
+
+　　sum+=p.X;
+
+
+　　}
+
+
+　　while (sum>count)
+
+
+　　{
+
+
+　　p.X[rand()%Dim]--;
+
+
+　　sum=0;
+
+
+　　for (int i=0;i<Dim;i++)
+
+
+　　{
+
+
+　　if (p.X>Xup)
+
+
+　　{
+
+
+　　p.X=Xup;
+
+
+　　}
+
+
+　　else if (p.X<Xdown)
+
+
+　　{
+
+
+　　p.X=Xdown;
+
+
+　　}
+
+
+　　if (p.V>Vmax)
+
+
+　　{
+
+
+　　p.V=Vmax;
+
+
+　　}
+
+
+　　else if (p.V<0)
+
+
+　　{
+
+
+　　p.V=0;
+
+
+　　}
+
+
+　　sum+=p.X;
+
+
+　　}
+
+
+　　}
+
+
+　　}
+
+
+　　void Input(ifstream& inf) //以inf为对象输入数据
+
+
+　　{
+
+
+　　for (int i=0;i<Dim;i++)
+
+
+　　{
+
+
+　　inf>>Xup;
+
+
+　　}
+
+
+　　for (int i=0;i<Dim;i++)
+
+
+　　{
+
+
+　　inf>>Value;
+
+
+　　}
+
+
+　　}
+
+
+　　void Initial() //初始化数据
+
+
+　　{
+
+
+　　GBIndex=0;
+
+
+　　srand((unsigned)time(NULL));//初始化随机函数发生器
+
+
+　　for (int i=0;i<Dim;i++)
+
+
+　　{
+
+
+　　Vmax=(int)((Xup-Xdown)*0.035);
+
+
+　　}
+
+
+　　for (int i=0;i {
+
+
+　　for (int j=0;j<Dim;j++)
+
+
+　　{
+
+
+　　Parr.X[j]=(int)(rand()/(double)RAND_MAX*(Xup[j]
+
+
+　　-Xdown[j])-Xdown[j]+0.5);
+
+
+　　Parr.XBest[j]=Parr.X[j];
+
+
+　　Parr.V[j]=(int)(rand()/(double)RAND_MAX*(Vmax[j] -Vmax[j]/2));
+
+
+　　}
+
+
+　　Parr.Fit=GetFit(Parr);
+
+
+　　Parr.FitBest=Parr.Fit;
+
+
+　　if (Parr.Fit>Parr[GBIndex].Fit)
+
+
+　　{
+
+
+　　GBIndex=i;
+
+
+　　}
+
+
+　　}
+
+
+　　}
+
+
+　　double GetFit(PARTICLE& p)//计算对象适应度
+
+
+　　{
+
+
+　　double sum=0;
+
+
+　　for (int i=0;i<Dim;i++)
+
+
+　　{
+
+
+　　for (int j=1;j<=p.X;j++)
+
+
+　　{
+
+
+　　sum+=(1-(j-1)*a/(Xup-b))*Value;
+
+
+　　}
+
+
+　　}
+
+
+　　return sum;
+
+
+　　}
+
+
+　　void CalculateFit()//计算数组内各粒子的适应度
+
+
+　　{
+
+
+　　for (int i=0;i {
+
+
+　　Parr.Fit=GetFit(Parr);
+
+
+　　}
+
+
+　　}
+
+
+　　void BirdsFly()//粒子飞行寻找最优解
+
+
+　　{
+
+
+　　srand((unsigned)time(NULL));
+
+
+　　static int k=10;
+
+
+　　w=Wmax-k*(Wmax-Wmin)/Kmax;
+
+
+　　k++;
+
+
+　　for (int i=0;i {
+
+
+　　for (int j=0;j<Dim;j++)
+
+
+　　{
+
+
+　　Parr.V[j]=(int)(w*Parr.V[j])
+
+
+　　+(int)(c1*rand()/(double)RAND_MAX*
+
+
+　　(Parr.XBest[j]-Parr.X[j])
+
+
+　　+c2*rand()/(double)RAND_MAX*
+
+
+　　(Parr[GBIndex].XBest[j]-Parr.X[j]));
+
+
+　　}
+
+
+　　Check(Parr,GdsCnt);
+
+
+　　for (int j=0;j<Dim;j++)
+
+
+　　{
+
+
+　　Parr.X[j]+=Parr.V[j];
+
+
+　　}
+
+
+　　Check(Parr,GdsCnt);
+
+
+　　}
+
+
+　　CalculateFit();
+
+
+　　for (int i=0;i {
+
+
+　　if (Parr.Fit>=Parr.FitBest)
+
+
+　　{
+
+
+　　Parr.FitBest=Parr.Fit;
+
+
+　　for (int j=0;j<Dim;j++)
+
+
+　　{
+
+
+　　Parr.XBest[j]=Parr.X[j];
+
+
+　　}
+
+
+　　}
+
+
+　　}
+
+
+　　GBIndex=0;
+
+
+　　for (int i=0;i {
+
+
+　　if (Parr.FitBest>Parr[GBIndex].FitBest&&i!=GBIndex)
+
+
+　　{
+
+
+　　GBIndex=i;
+
+
+　　}
+
+
+　　}
+
+
+　　}
+
+
+　　void Run(ofstream& outf,int num)//令粒子以规定次数num飞行
+
+
+　　{
+
+
+　　for (int i=0;i<num;i++)
+
+
+　　{
+
+
+　　BirdsFly();
+
+
+　　outf<<(i+1)<<ends< for (int j=0;j<Dim;j++)
+
+
+　　{
+
+
+　　outf< }
+
+
+　　outf<<endl;
+
+
+　　}
+
+
+　　cout<<"Done!"<<endl;
+
+
+　　}
+

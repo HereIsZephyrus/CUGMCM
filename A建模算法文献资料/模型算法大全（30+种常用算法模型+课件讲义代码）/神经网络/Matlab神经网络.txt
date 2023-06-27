@@ -1,0 +1,118 @@
+Matlab神经网络——走过数模2009-07-02 23:07bp.m
+function [xs]=bp(p1,future,num,way,precision)
+
+%[xs]=bp(p1,future,num,way,precision)
+% 该函数对所有数据都归一化，在训练，预测，还原
+% xs是以前数据和预测以后的数据，p1是输入的原始数据
+%future是往以后预测的个数默认值是20个
+%num是输入网络数据数，默认值是5个；
+%way是训练方法，输入格式为 'traingd'(默认值)——梯度下降
+%                         'traingda'——有自适应学习率的梯度下降
+%                         'traingdm'——有动量的梯度下降
+%                         'traingdx'——有动量和自适应的梯度下降
+%                         'trainb'——利用权值和阀系数学习规则批处理
+%                         'trainbfg'——BFGS拟牛顿回退训练函数
+%                         'traincgb'——Powell-Beale共轭梯度的BP算法
+%                         'traincgf'——Fletcher-Powell共轭梯度
+%precision是预测精度;默认是1e-6
+
+if nargin < 2, future=20; end
+if nargin < 3, num=5; end
+if nargin < 4, way='traingd'; end
+if nargin < 5, precision=1e-6; end
+xs=p1;
+
+n=max(size(p1)); %输入数据个数
+for k=1:n;
+    p(k)=0.8*(p1(k)-min(p1))/(max(p1)-min(p1))+0.1;
+end
+
+for i=1:n-num
+    for j=1:num
+        x(j,i)=p(i+j-1);
+    end
+    t(i)=p(i+j);
+end
+
+PR=[zeros(num,1),ones(num,1)];
+net=newff(PR,[5,1],{'tansig','purelin'},way);
+
+net.trainParam.show =500;
+net.trainParam.lr =0.05;
+net.trainParam.epochs =3000;
+net.trainParam.goal =precision;
+[net,tr]=train(net,x,t);
+
+p2=[p(n-num+1:n)]';
+for m=1:future
+    s(m)=sim(net,p2);
+    for k=1:num-1
+        p2(k)=p2(k+1);
+    end
+    p2(num)=s(m);
+    xs(n+m)=(s(m)-0.1)*(max(p1)-min(p1))/0.8+min(p1);
+end
+
+bp.m
+function   [xs]=bp1(p1,t,way,precision)
+%[xs]=bp1(p1,t,way,precision)
+%该函数对所有数据都归一化，在训练，预测，还原
+%适用于给出一些因素影响这最终结果的情况；
+%p1是条件数据
+%t是结果数据
+%xs是预测以后的数据
+%way是训练方法，输入格式为 'traingd'(默认值)——梯度下降
+%                         'traingda'——有自适应学习率的梯度下降
+%                         'traingdm'——有动量的梯度下降
+%                         'traingdx'——有动量和自适应的梯度下降
+%                         'trainb'——利用权值和阀系数学习规则批处理
+%                         'trainbfg'——BFGS拟牛顿回退训练函数
+%                         'traincgb'——Powell-Beale共轭梯度的BP算法
+%                         'traincgf'——Fletcher-Powell共轭梯度
+%precision是预测精度;默认是1e-6
+%一点建议，最好多选几种收敛方法，效果会更好
+
+if nargin < 3, way='traingd'; end
+if nargin < 4, precision=1e-6; end
+xs=t;
+
+[m,n]=size(p1); %输入数据个数
+for i=1:m
+    for k=1:n
+        p(i,k)=0.8*(p1(i,k)-min(p1(i,:)))/(max(p1(i,:))-min(p1(i,:)))+0.1;
+    end
+end
+
+for k=1:n
+    t1(k)=0.8*(t(1)-min(t))/(max(t)-min(t))+0.1;
+end
+
+
+PR=[zeros(m,1),ones(m,1)];
+net=newff(PR,[5,1],{'tansig','purelin'},way);
+
+net.trainParam.show =50;
+net.trainParam.lr =0.05;
+net.trainParam.epochs =3000;
+net.trainParam.goal =precision;
+[net,tr]=train(net,p,t1);
+
+
+    
+p2=input('Type in the data:');
+[a,b]=size(p2);
+if a~=m
+    error('您输入的列数据个数不等于原来输入的数列')
+end
+
+for i=1:m 
+    for j=1:b
+        q(i,j)=0.8*(p2(i,j)-min(p1(i,:)))/(max(p1(i,:))-min(p1(i,:)))+0.1;
+    end
+end
+s=sim(net,q);
+for k=1:m
+    xs(k)=(s(k)-0.1)*(max(t)-min(t))/0.8+min(t);
+end
+
+ 

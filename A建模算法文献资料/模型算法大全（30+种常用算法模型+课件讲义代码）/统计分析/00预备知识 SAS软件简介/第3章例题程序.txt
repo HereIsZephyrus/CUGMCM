@@ -1,0 +1,252 @@
+例3.1
+data sell;
+input y x1 x2;
+cards;
+162 274 2450
+120 180 3254
+223 375 3802
+131 205 2838
+67 86 2347
+169 265 3782
+81 98 3008
+192 330 2450
+116 195 2137
+55 53 2560
+252 430 4020
+232 372 4427
+144 236 2660
+103 157 2088
+212 370 2605
+;
+proc plot data=sell;
+plot y*(x1 x2);   /*plot y*x1='1' y*x2='2'/overlay;*/
+run;
+proc corr data=sell;
+var y x1 x2;
+run;
+proc reg data=sell;
+model y=x1 x2/p r cli clm ;   /*model y=x1 x2/vif 可计算自变量的方差膨胀因子，越大共线性越大*/
+output out=sell1 p=p L95M=xiaxian U95M=shangxian H=touying r=r student=stdr ;
+proc print data=sell1;
+run;
+
+下面画出拟合值与残差的散点图。
+proc reg data=sell;
+model y=x1 x2/all ;   /*model y=x1 x2/vif collin colinoint vif 可计算自变量的方差膨胀因子，越大共线性越大*/
+plot residual. *(predicted. obs. x1 x2);
+run;
+
+例3.3
+data new;
+set sell1;
+keep r;
+run;
+proc sort data=new;
+by r;
+run;
+
+data new1;
+i=1;
+do until (i=16);
+q=sqrt(4.7403)*probit((i-0.375)/(15+0.25));
+output;
+i=i+1;
+end;
+run;
+data new2;
+merge new1 new;
+run;
+proc print data=new2;
+run;
+proc plot;
+plot r*q;
+run;
+
+proc corr data=new2;   /*计算相关系数*/
+var r q;
+run;
+
+可以使用前面的capability过程作qq图
+proc capability graphics data=sell1;
+qqplot r/normal;
+run;
+
+
+
+
+
+例3.4
+data survival;
+input x1-x4 y;
+y1=log10(y);
+cards;
+6.7 62 81 2.59 200 
+5.1 59 66 1.70 101
+7.4 57 83 2.16 204 
+6.5 73 41 2.01 101
+7.8 65 115 4.30 509
+5.8 38 72 1.42 80
+5.7 46 63 1.91 80
+3.7 68 81 2.57 127 
+6.0 67 93 2.50 202
+3.7 76 94 2.4 203
+6.3 84 83 4.13 329 
+6.7 51 43 4.86 65 
+5.8 96 114 3.95 830
+5.8 83 88 3.95 330
+7.7 62 67 3.4 168
+7.4 74 68 2.40 217
+6.0 85 28 2.98 87
+3.7 51 41 1.55 34
+7.3 68 74 3.56 215
+5.6 57 87 3.02 172
+5.2 52 76 2.85 109
+3.4 83 53 1.12 136
+6.7 26 68 2.10 70
+5.8 67 86 3.40 220
+6.3 59 100 2.95 276
+5.8 61 73 3.50 144
+5.2 52 86 2.45 181 
+11.2 76 90 5.59 574
+5.2 54 56 2.71 72 
+5.8 76 59 2.58 178
+3.2 64 65 0.74 71 
+8.7 45 23 2.52 58
+5.0 59 73 3.50 116
+5.8 72 93 3.30 295
+5.4 58 70 2.64 115
+5.3 51 99 2.60 184
+2.6 74 86 2.05 118
+4.3 8 119 2.85 120
+4.8 61 76 2.54 151
+5.4 52 88 1.81 148
+5.2 49 72 1.84 95 
+3.6 28 99 1.30 75
+8.8 86 88 6.40 483
+6.5 56 77 2.85 153
+3.4 77 93 1.48 191
+6.5 40 84 3.00 123
+4.5 73 106 3.05 311 
+4.8 86 101 4.10 398
+5.1 67 77 2.86 158
+3.9 82 103 4.55 310
+6.6 77 46 1.95 124
+6.4 85 40 1.21 125
+6.4 59 85 2.33 198
+8.8 78 72 3.20 313
+;
+proc reg data=survival;/*变换前残差正态QQ图*/
+model y=x1-x4;   
+output out=survival1 p=p r=r student=stdr;
+proc print data=survival1;
+run;
+proc capability graphics;
+qqplot r;
+run;
+
+proc reg data=survival; /*变换后残差正态QQ图*/
+model y1=x1-x4;  
+output out=survival1 p=p r=r student=stdr;
+proc print data=survival1;
+run;
+proc capability graphics;
+qqplot r;
+run;
+
+proc reg data=survival; /*RP2值决定*/
+model y1=x1-x4/selection=Rsquare details;  
+run;
+proc reg data=survival; /*RA2值决定*/
+model y1=x1-x4/selection=adjrsq details;  
+run;
+proc reg data=survival; /*cp值决定*/
+model y1=x1-x4/selection=cp details;  
+run;
+
+
+例五
+proc reg data=survival;
+model y1=x1-x4/selection=stepwise slentry=0.05 slstay=0.05 details;
+run;
+
+补充实例
+
+title ' "应用多元统计分析"  p128:例4.2.1';
+/*----yydy421.sas  */
+
+
+data d411;
+  input x1-x4 y ;
+  cards;
+7  26  6 60  78.5
+1  29 15 52  74.3
+11 56  8 20 104.3
+11 31  8 47  87.6
+7  52  6 33  95.9
+11 55  9 22 109.2
+3  71 17  6 102.7
+1  31 22 44  72.5
+2  54 18 22  93.1
+21 47  4 26 115.9
+1  40 23 34  83.8
+11 66  9 12 113.3
+10 68  8 12 109.4
+;
+
+proc reg data=d411;
+   model y=x1-x4 / selection=stepwise
+                   sle=0.10 sls=0.10 details; 
+run;
+quit;
+
+title ' "应用多元统计分析"  p128-P130:例4.2.2';
+/*----yydy422.sas  */
+
+
+data d411;
+  input x1-x4 y ;
+  cards;
+7  26  6 60  78.5
+1  29 15 52  74.3
+11 56  8 20 104.3
+11 31  8 47  87.6
+7  52  6 33  95.9
+11 55  9 22 109.2
+3  71 17  6 102.7
+1  31 22 44  72.5
+2  54 18 22  93.1
+21 47  4 26 115.9
+1  40 23 34  83.8
+11 66  9 12 113.3
+10 68  8 12 109.4
+;
+
+proc reg data=d411;
+   model y=x1-x4 / selection=rsquare 
+                   b adjrsq cp aic mse sbc; 
+run;
+
+quit;
+/*说明回归子集中几种最优准则的统计量，其中R-Square增加最快的好； Adjusted-R-Square越大越好，Cp值越接近P值越好，AIC、SBC、MSE越小越好*/
+
+
+
+应用实例
+data shiyan;
+input x y @@;
+cards;
+170 45 173 42 160 44 155 41 173 47 168 50 178 47 183 46 180 49 165 43
+;
+proc gplot data=shiyan;
+plot y*x/ctext=blue;
+symbol value=diamond color=red width=2;
+run;
+
+proc gchart data=shiyan;
+hbar x;
+pie x;
+run;
+
+
+
+

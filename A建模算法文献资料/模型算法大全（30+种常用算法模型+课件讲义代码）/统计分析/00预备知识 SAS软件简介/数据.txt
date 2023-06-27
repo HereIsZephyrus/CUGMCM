@@ -1,0 +1,49 @@
+一、学习数据
+
+DATA Study.Bclass ;
+      INPUT  NAME $ AGE   SEX $  HEIGHT   WEIGHT  ;
+      CARDS ;
+KATE        12       F      145      43.1
+LOUISE      12       F      149      55.8
+JANE        12       F      135      33.6
+JACLYN      12       F      162      65.8
+LILLIE      12       F      127      29.1
+TIM         12       M      147      38.1
+JAMES       12       M      149      58.1
+ROBERT      12       M      125      35.9
+BARBARA     13       F      147      50.8
+ALICE       13       F      149      48.6
+SUSAN       13       F      137      30.4
+JOHN        13       M      159      44.5
+JOE         13       M      154      47.7
+MICHAEL     13       M      142      43.1
+DAVID       13       M      145      35.9
+JUDY        14       F      149      36.8
+ELIZABET    14       F      152      41.3
+LESLIE      14       F      159      64.5
+CAROL       14       F      154      38.1
+PATTY       14       F      152      38.6
+FREDRICK    14       M      154      42.2
+ALFRED      14       M      157      44.9
+HENRY       14       M      159      54.0
+LEWIS       14       M      157      41.8
+EDWARD      14       M      167      50.8
+CHRIS       14       M      157      44.9
+JEFFERY     14       M      169      51.3
+MARY        15       F      152      41.8
+AMY         15       F      157      50.8
+ROBERT      15       M      164      58.1
+WILLIAM     15       M      159      50.4
+CLAY        15       M      162      47.7
+MARK        15       M      152      47.2
+DANNY       15       M      162      48.1
+MARTHA      16       F      159      50.8
+MARIAN      16       F      147      52.2
+PHILLIP     16       M      167      58.1
+LINDA       17       F      152      52.7
+KIRK        17       M      167      60.8
+LAWRENCE    17       M      172      78.1
+;
+Run ;
+PROC PRINT DATA=STUDY.BCLASS;
+RUN;

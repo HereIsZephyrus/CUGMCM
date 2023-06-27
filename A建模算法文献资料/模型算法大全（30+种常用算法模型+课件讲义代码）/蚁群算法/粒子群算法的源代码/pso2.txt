@@ -1,0 +1,176 @@
+一个pso程序的源代码。在vc.net2003下面通过。
+
+建议：看代码之前，请先弄明白pso是怎么回事。然后请对应着来：程序中用Agent代表一只鸟，PSO代表鸟群。阅读源代码，不要顺着看，先看main(),然后按照出现的东西的顺序，一个一个得来，呵呵，纯粹是建议。
+
+// PSO.cpp : 定义控制台应用程序的入口点。
+//粒子群优化算法基本程序
+//你可以使用本代码，如果感到对你有用的话，请通知作者，作者会很高兴。
+//通讯地址：fashionxu@163.com
+//by FashionXu
+
+//本程序在vc++.net 2003下面通过，你如果要在vc6.0下面使用，请查阅相关资料修改，或者联系作者
+#include "stdafx.h"
+#include "iostream"
+#define _USE_MATH_DEFINES
+#include "math.h"
+#include 
+
+const int  iAgentDim=20;//优化函数的维数
+const double iRangL=-30;//函数的取值范围
+const double iRangR=30;
+
+const int iPSONum=20;//粒子数
+
+int iStep=10000;//跌代次数
+//下面的值，要具体程序中具体的修改，根据你优化的函数来修改
+double w=0.9;//惯性系数
+const double delta1=1;//1.494;//加速度
+const double delta2=1;//1.494;
+
+#define rnd(low,uper)((rand()/(double)RAND_MAX)*((uper)-(low))+(low))//这个东西，返回low ,uper之间的一个值
+double gbest[iAgentDim];//global best fitness保留全局最优值的坐标
+using namespace std;
+
+
+class Agent//这个类表示单个的粒子，也就是一只鸟  ：）
+{
+public:
+ double dpos[iAgentDim];   //位置，也就是各个维数的值
+ double dpbest[iAgentDim];       //维护一个“自己”找到的最优值的解
+ double dv[iAgentDim];   //速度
+ double m_dFitness;//agent's fitness  当前算出的一个值
+ double m_dBestfitness;//agent's best fitness  自己已经找到的最好值
+
+ Agent()//初始化
+ { 
+  srand( (unsigned)(time( NULL )+rand()) );
+  int i=0;
+  for(;i<IAGENTDIM;I++)
+  {
+   dpos[i]=rnd(iRangL,iRangR);
+   dv[i]=dpbest[i]=dpos[i];
+  }
+ }
+ void UpdateFitness()
+  /*calculate the fitness and find out the best fitness,record*/
+ {
+  
+  double sum1=0;
+  double sum2=0;
+
+/*Ackley Funtion*/ 
+
+ for (int i=0;i {
+  sum1+=(dpos [i]*dpos [i]);
+  sum2+=cos(2*M_PI*dpos [i]);
+ }
+
+ m_dFitness=(-20*exp(-0.2*(sqrt((1.0/(double)iAgentDim *sum1))))-exp((1.0/(double)iAgentDim )*sum2)+20+M_E);
+ //The Rastrigin function
+  //int i=0;
+  //for (;i<IAGENTDIM;I++)
+  //{
+  // sum1+=(dpos [i]*dpos [i])-3.0*cos(2*M_PI*dpos [i]);
+  //}
+  //m_dFitness=3.0*iAgentDim+sum1;
+
+  //找到一个更好的值后，更新 m_dBestfitness
+  if (m_dFitness  {
+   m_dBestfitness=m_dFitness;
+   int i=0;
+   for(;i<IAGENTDIM;I++)
+   {
+    dpbest[i]=dpos[i];
+   }
+  }
+  
+ }
+ void UpdatePos()//agent moving
+ {
+  int i=0;
+
+  for(;i<IAGENTDIM;I++)
+  {
+
+//   basi pso
+  dv[i]=w*dv[i]+delta1*rnd(0,1)*(dpbest[i]-dpos[i])+delta2*rnd(0,1)*(gbest[i]-dpos[i]);
+   dpos[i]+=dv[i];
+  }
+
+ }
+};
+class PSO//这是粒子群，也就是鸟群了
+{
+private:
+ Agent agents[iPSONum];
+ double m_dBestFitness;//鸟群找到的最优值
+ int m_iTempPos;
+public:
+ void Init();
+ void Search();
+};
+void PSO::Search()
+{
+ int k=0; 
+
+ while( k<ISTEP)
+ {
+  m_iTempPos=999;
+  int i;
+  for(i=0;i<IPSONUM;I++)
+  {//此处是找找鸟群中有没有更好的解，如果有，记录下来
+   if (m_dBestFitness>agents[i].m_dBestfitness ) 
+   {
+    m_dBestFitness=agents[i].m_dBestfitness;
+    m_iTempPos=i;//找到到的最好解的位置
+   }
+  }
+  if (m_iTempPos!=999)
+  {
+   int j;
+
+   for(j=0;j<IAGENTDIM;J++)
+   {
+    gbest[j]=agents[m_iTempPos].dpos[j];//记录全局最优解的各个坐标
+   }
+  }
+  //printf("The best is %f \n",m_dBestFitness);
+  //下一次跌代
+  for(i=0;i<IPSONUM;I++)
+  { 
+   agents[i].UpdatePos();
+   agents[i].UpdateFitness ();
+  }   
+  k++;
+
+ }
+  printf("The best result is: %2.15f    after %d step. \n",m_dBestFitness,k);
+
+ {
+  for (int i=0;i<IAGENTDIM;I++)
+   printf(" %2.15f ",gbest[i]);
+ }
+ }
+
+void PSO::Init()//初始化，
+{
+ int i=0;
+ m_dBestFitness=100000;
+ srand( (unsigned)(time( NULL )+rand()) ); 
+ for(;i<IPSONUM;I++)
+ { 
+  agents[i].m_dBestfitness =100000;//将m_dBestfitness赋值为一个大的值，目的是找最小值，
+  agents[i].UpdateFitness();
+ }
+}
+int main(int argc, char* argv[])
+{
+ PSO pso;
+ pso.Init ();
+ pso.Search();
+ printf("\n");
+ char c;
+ scanf("%c",&c);
+ return 0;
+}
+

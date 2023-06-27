@@ -1,0 +1,174 @@
+%%####################################################################
+%%#### Particle swarm optimization
+%%#### With linkage operator
+%%#### Deepak devicharan july 2003
+%%####################################################################
+
+%%## to apply this to different equations do the following
+%%## generate initial particles in a search space close to actual soln
+%%## fool around with no of iterations, no of particles, learning rates
+
+%%## for a truly generic PSO do the following
+%%## increase the number of particles , increase the variance
+%%## i.e let the particles cover a larger area of the search space
+%%## then fool around as always with the above thins
+
+%declare the parameters of the optimization
+
+max_iterations = 1000;
+no_of_particles = 50;
+dimensions = 1;
+
+delta_min = -0.003;
+delta_max = 0.003;
+
+c1 = 1.3;
+c2 = 1.3;
+
+%initialise the particles and teir velocity components
+
+for count_x = 1:no_of_particles
+for count_y = 1:dimensions
+particle_position(count_x,count_y) = rand*10;
+particle_velocity(count_x,count_y) = rand;
+p_best(count_x,count_y) = particle_position(count_x,count_y);
+end
+end
+
+%initialize the p_best_fitness array
+for count = 1:no_of_particles
+p_best_fitness(count) = -1000;
+end
+
+%particle_position
+%particle_velocity
+
+%main particle swrm routine
+for count = 1:max_iterations
+
+%find the fitness of each particle
+%change fitness function as per equation requiresd and dimensions
+for count_x = 1:no_of_particles
+%x = particle_position(count_x,1);
+%y = particle_position(count_x,2);
+%z = particle_position(count_x,3);
+%soln = x^2 - 3*y*x + z;
+
+%x = particle_position(count_x); 
+%soln = x^2-2*x+1;
+
+x = particle_position(count_x);
+soln = x-7;
+
+if soln~=0 
+current_fitness(count_x) = 1/abs(soln);
+else
+current_fitness =1000;
+end
+end
+
+%decide on p_best etc for each particle
+for count_x = 1:no_of_particles
+if current_fitness(count_x) > p_best_fitness(count_x)
+p_best_fitness(count_x) = current_fitness(count_x);
+for count_y = 1:dimensions
+p_best(count_x,count_y) = particle_position(count_x,count_y);
+end
+end
+end
+
+%decide on the global best among all the particles
+[g_best_val,g_best_index] = max(current_fitness);
+
+%g_best contains the position of teh global best
+for count_y = 1:dimensions
+g_best(count_y) = particle_position(g_best_index,count_y); 
+end
+
+%update the position and velocity compponents
+for count_x = 1:no_of_particles
+for count_y = 1:dimensions
+p_current(count_y) = particle_position(count_x,count_y);
+end
+
+for count_y = 1:dimensions
+particle_velocity(count_y) = particle_velocity(count_y) + c1*rand*(p_best(count_y)-p_current(count_y)) + c2*rand*(g_best(count_y)-p_current(count_y));
+particle_positon(count_x,count_y) = p_current(count_y) +particle_velocity(count_y);
+end
+end
+
+
+end
+
+g_best 
+current_fitness(g_best_index)
+
+clear all, clc % pso example
+iter = 1000; % number of algorithm iterations
+np = 2; % number of model parameters
+ns = 10; % number of sets of model parameters
+Wmax = 0.9; % maximum inertial weight
+Wmin = 0.4; % minimum inertial weight
+c1 = 2.0; % parameter in PSO methodology
+c2 = 2.0; % parameter in PSO methodology
+Pmax = [10 10]; % maximum model parameter value
+Pmin = [-10 -10]; % minimum model parameter value
+Vmax = [1 1]; % maximum change in model parameter
+Vmin = [-1 -1]; % minimum change in model parameter
+modelparameters(1:np,1:ns) = 0; % set all model parameter estimates for all model parameter sets to zero
+modelparameterchanges(1:np,1:ns) = 0; % set all change in model parameter estimates for all model parameter sets to zero
+bestmodelparameters(1:np,1:ns) = 0; % set best model parameter estimates for all model parameter sets to zero
+setbestcostfunction(1:ns) = 1e6; % set best cost function of each model parameter set to a large number
+globalbestparameters(1:np) = 0; % set best model parameter values for all model parameter sets to zero
+bestparameters = globalbestparameters'; % best model parameter values for all model parameter sets (to plot)
+globalbestcostfunction = 1e6; % set best cost function for all model parameter sets to a large number
+i = 0; % indicates ith algorithm iteration
+j = 0; % indicates jth set of model parameters
+k = 0; % indicates kth model parameter
+for k = 1:np % initialization
+for j = 1:ns
+modelparameters(k,j) = (Pmax(k)-Pmin(k))*rand(1) + Pmin(k); % randomly distribute model parameters
+    modelparameterchanges(k,j) = (Vmax(k)-Vmin(k))*rand(1) + Vmin(k); % randomly distribute change in model parameters
+end
+end
+for i = 2:iter
+for j = 1:ns
+x = modelparameters(:,j);
+% calculate cost function
+costfunction = 105*(x(2)-x(1)^2)^2 + (1-x(1))^2;
+    if costfunction < setbestcostfunction(j) % best cost function for jth set of model parameters
+bestmodelparameters(:,j) = modelparameters(:,j);
+      setbestcostfunction(j) = costfunction;
+end
+    if costfunction < globalbestcostfunction % best cost function for all sets of model parameters
+globalbestparameters = modelparameters(:,j);
+bestpar
+
+ameters(:,i) = globalbestparameters;
+     globalbestcostfunction(i) = costfunction;
+else
+bestparameters(:,i) = bestparameters(:,i-1);
+globalbestcostfunction(i) = globalbestcostfunction(i-1);
+end
+end
+  W = Wmax - i*(Wmax-Wmin)/iter; % compute inertial weight
+for j = 1:ns % update change in model parameters and model parameters
+    for k = 1:np
+      modelparameterchanges(k,j) = W*modelparameterchanges(k,j) + c1*rand(1)*(bestmodelparameters(k,j)-modelparameters(k,j))...
+         + c2*rand(1)*(globalbestparameters(k) - modelparameters(k,j));
+      if modelparameterchanges(k,j) < -Vmax(k), modelparameters(k,j) = modelparameters(k,j) - Vmax(k); end
+if modelparameterchanges(k,j) > Vmax(k), modelparameters(k,j) = modelparameters(k,j) + Vmax(k); end
+if modelparameterchanges(k,j) > -Vmax(k) & modelparameterchanges(k,j) < Vmax(k), modelparameters(k,j) = modelparameters(k,j) + modelparameterchanges(k,j); end
+      if modelparameters(k,j) < Pmin(k), modelparameters(k,j) = Pmin(k); end
+      if modelparameters(k,j) > Pmax(k), modelparameters(k,j) = Pmax(k); end
+end
+end
+i
+end
+bp = bestparameters; index = linspace(1,iter,iter);
+figure; semilogy(globalbestcostfunction,'k');
+set(gca,'FontName','Arial','Fontsize',14); axis tight;
+xlabel('iteration'); ylabel('cost function');
+figure; q = plot(index,bp(1,,'k-',index,bp(2,,'k:');
+set(gca,'FontName','Arial','Fontsize',14); axis tight;
+legend(q,'x_1','x_2'); xlabel('iteration'); ylabel('parameter')

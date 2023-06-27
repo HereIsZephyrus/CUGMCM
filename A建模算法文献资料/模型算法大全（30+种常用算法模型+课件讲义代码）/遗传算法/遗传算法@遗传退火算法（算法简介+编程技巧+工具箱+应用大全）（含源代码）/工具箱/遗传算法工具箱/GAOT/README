@@ -1,0 +1,21 @@
+This directory contains the Genetic Algorithm Optimization Toolbox for
+Matlab.
+
+To use this, if you are local to NCSU and have AFS access to this
+directory, simply extend the matlab path here.
+
+>>path(path,'/afs/eos/info/ie589k_info/GAOT');
+
+Otherwise, install the .m files into a directory named GAOT and extend
+the matlab path to that directory.  The compressed tar archive and the
+zip file should automatically create the GAOT directory for you.
+
+The companion paper describing this toolbox is included here as
+gaot.ps. This and the three demo files, gademo1.m gademo2.m gademo3.m,
+should be sufficient explanation of this toolbox.  For any questions,
+comments, suggestions send mail to jjoine@eos.ncsu.edu.
+
+For a list of the files in the tool box get help on GAOT.
+
+Thanks for trying the toolbox.
+

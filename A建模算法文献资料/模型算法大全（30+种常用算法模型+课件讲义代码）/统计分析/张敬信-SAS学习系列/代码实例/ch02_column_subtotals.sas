@@ -1,0 +1,10 @@
+proc sort data=Sasuser.admit out=work.activity;
+by Actlevel;
+run;
+proc print data=work.activity;
+var Age Height Weight Fee;
+where Age>40;
+sum Fee;
+by Actlevel;
+id actlevel;
+run;

@@ -1,0 +1,15 @@
+data tests1;
+infile 'c:\MyRawData\tests1.txt';
+input Name $1-9 Exam1 11-12 Exam2 15-16 Homework $ 19;
+run;
+proc print data = tests1;
+title 'Tests1';
+run;
+proc transpose data=tests1  Out=tests2  Name=Course;
+var Exam1 Exam2 Homework;
+id name;
+copy Homework;
+run;
+proc print data = tests2;
+title 'Transpose Tests1';
+run;

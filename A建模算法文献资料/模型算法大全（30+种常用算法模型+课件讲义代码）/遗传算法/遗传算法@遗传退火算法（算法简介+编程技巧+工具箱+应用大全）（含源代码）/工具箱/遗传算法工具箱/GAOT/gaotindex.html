@@ -1,0 +1,69 @@
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1>Genetic Algorithm Optimization Toolbox (GAOT)</h1>
+<pre>
+
+The following files are in the distribution:
+
+<b>Main interface</b>
+
+ <a href="./ga.m">ga.m</a>                   The Genetic Algorithm  
+ <a href="./initialize.m">initialize.m</a>           Initialization function Used by ga.m   
+
+<b>Operators used during simulated evolution</b>
+
+ <b>Crossover Operators</b>
+  <a href="./heuristicXover.m">heuristicXover.m</a>       Operator for the Algorithm Used by ga.m 
+  <a href="./arithXover.m">arithXover.m</a>           Operator for the Algorithm Used by ga.m 
+  <a href="./simpleXover.m">simpleXover.m</a>          Operator for the Algorithm Used by ga.m 
+
+ <b>Mutation Operators</b>
+  <a href="./binaryMutation.m">binaryMutation.m</a>       Operator for the Algorithm Used by ga.m 
+  <a href="./boundaryMutation.m">boundaryMutation.m</a>     Operator for the Algorithm Used by ga.m 
+  <a href="./multiNonUnifMutation.m">multiNonUnifMutation.m</a> Operator for the Algorithm Used by ga.m 
+  <a href="./nonUnifMutation.m">nonUnifMutation.m</a>      Operator for the Algorithm Used by ga.m 
+  <a href="./unifMutation.m">unifMutation.m</a>         Operator for the Algorithm Used by ga.m
+
+ <b>Selection Functions</b>
+  <a href="./normGeomSelect.m">normGeomSelect.m</a>       Selection function Used by ga.m
+  <a href="./roulette.m">roulette.m</a>             Selection function Used by ga.m
+  <a href="./tournSelect.m">tournSelect.m</a>          Selection function Used by ga.m
+
+ <b>Termination Functions</b>
+  <a href="./maxGenTerm.m">maxGenTerm.m</a>           Termination function Used by ga.m
+  <a href="./optMaxGenTerm.m">optMaxGenTerm.m</a>        Termination function Used by ga.m
+
+<b>Functions used for binary representation</b>
+  <a href="./calcbits.m">calcbits.m</a>             Binary precision function used by ga.m
+  <a href="./f2b.m">f2b.m</a>                  Float to Binary conversion used by ga.m
+  <a href="./b2f.m">b2f.m</a>                  Binary to Float conversion used by ga.m
+
+<b>Utility functions</b>
+  <a href="./parse.m">parse.m</a>                Parse blank separated names used by ga.m
+  <a href="./delta.m">delta.m</a>                Used by nonUnifMutation.m and mult...m
+
+<b>Demonstrations</b>
+  <a href="./gademo1.m">gademo1.m</a>              Introductory demo of GAOT
+  <a href="./gademo2.m">gademo2.m</a>              Multi-dimensional demo of GAOT
+  <a href="./gademo3.m">gademo3.m</a>              Reference for GAOT
+
+ <b>Functions used in Demonstrations</b>
+  <a href="./gademo1eval1.m">gademo1eval1.m</a>         Example eval function used by gademo1.m
+  <a href="./coranaEval.m">coranaEval.m</a>           Calculate Corana functions used by gademo2.m
+  <a href="./coranaMin.m">coranaMin.m</a>            Calculate negative of Corana used by gademo2.m
+  <a href="./gaEval.m">gaEval.m</a>               Calculation of Corana used for testing
+  <a href="./gaGradEval.m">gaGradEval.m</a>           Evaluation Used for Testing      
+  <a href="./gaGradGrad.m">gaGradGrad.m</a>           Gradient used for SQP during Testing
+</pre>
+
+
+
+<hr>
+<address><a href="mailto:jjoine@eos.ncsu.edu">Jeff Joines (jjoine@eos.ncsu.edu)</a></address>
+<!-- hhmts start -->
+Last modified: Wed Feb  7 10:21:44 1996
+<!-- hhmts end -->
+</body> </html>

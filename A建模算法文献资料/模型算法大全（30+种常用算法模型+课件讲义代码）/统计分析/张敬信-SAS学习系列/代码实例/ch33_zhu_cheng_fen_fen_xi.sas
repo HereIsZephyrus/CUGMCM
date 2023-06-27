@@ -1,0 +1,10 @@
+data Economics;
+infile 'C:\MyRawData\Economics.txt';
+input Province $ x1 x2 x3 x4 x5 x6 x7 x8;
+run;
+proc princomp data = Economics n = 3 out = Resusts plots= score(ellipse ncomp=2);
+id Province;
+var x1-x8;
+run;
+proc print data = Resusts;
+run;

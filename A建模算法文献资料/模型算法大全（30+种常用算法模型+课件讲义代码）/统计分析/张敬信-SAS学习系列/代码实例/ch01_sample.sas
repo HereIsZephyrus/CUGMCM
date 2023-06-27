@@ -1,0 +1,14 @@
+data sasuser.admit2;
+set sasuser.admit;
+where age>39;
+run;
+proc print data=sasuser.admit2;
+run;
+proc report data=sasuser.admit;
+columns id name sex age actlevel;
+run;
+proc tabulate data=sasuser.admit;
+class sex;
+var height weight;
+table sex*(height weight),mean;
+run;

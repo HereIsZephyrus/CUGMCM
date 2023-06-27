@@ -1,0 +1,12 @@
+* Change all 9s to missing values;
+data songs;
+infile 'c:\MyRawData\KBRK.dat';
+input City $ 1-15 Age wj kt tr filp ttr;
+array song[5] wj kt tr filp ttr;
+do i = 1 to 5;
+if song[i] = 9 THEN song[i] =.;
+end;
+run;
+proc print data = songs;
+title 'KBRK Song Survey';
+run;

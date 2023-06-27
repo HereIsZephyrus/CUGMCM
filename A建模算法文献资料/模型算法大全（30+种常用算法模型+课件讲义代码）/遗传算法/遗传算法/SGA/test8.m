@@ -1,0 +1,2 @@
+bounds=[-5.12,+5.12;-5.12,+5.12];popsum=120;evalFN='examplefun4';startpop=[];pc=0.75;pm=0.01;maxterm=1000;precision=1e-8;last=1;
+[xval,bpop] =SGA(bounds,popsum,evalFN,startpop,pc,pm,maxterm,precision,last);

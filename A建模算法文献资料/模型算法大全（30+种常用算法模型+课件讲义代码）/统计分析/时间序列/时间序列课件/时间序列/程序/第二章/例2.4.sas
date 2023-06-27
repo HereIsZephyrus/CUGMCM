@@ -1,0 +1,11 @@
+data a;
+do time=-50 to 1000 by 1;
+noise=rannor(12345);
+if time>0 then output;
+end;
+proc gplot;
+plot noise*time;
+symbol v=none i=join c=red;
+proc arima data=a;
+identify var=noise;
+run;

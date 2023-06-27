@@ -1,0 +1,11 @@
+data librarycards;
+infile 'c:\MyRawData\Library.dat' TRUNCOVER;
+input Name $11. + 1 BirthDate MMDDYY10. +1 IssueDate ANYDTDTE10. DueDate DATE11.;
+DaysOverDue = DueDate - TODAY();
+CurrentAge = INT(YRDIF(BirthDate, TODAY(), 'AGE'));
+if IssueDate > '01JAN2012'D then NewCard = 'yes';
+run;
+proc print data = librarycards;
+format Issuedate MMDDYY8. DueDate WEEKDATE17.;
+title 'SAS Dates without and with Formats';
+run;

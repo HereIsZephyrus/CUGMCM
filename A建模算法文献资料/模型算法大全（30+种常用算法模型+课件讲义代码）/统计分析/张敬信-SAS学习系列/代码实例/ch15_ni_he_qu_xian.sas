@@ -1,0 +1,10 @@
+data Olympic1500;
+infile 'C:\MyRawData\Olympic1500.dat';
+input Year Men @@;
+run;
+proc sgplot data = Olympic1500;
+LOESS X = Year Y = Men / NOMARKERS CLM NOLEGCLM;
+REG X = Year Y = Men;
+label Men = 'Time in Seconds';
+title "Olympic Times for Men's 1500 Meter Run";
+run;

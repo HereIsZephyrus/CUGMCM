@@ -1,0 +1,11 @@
+data boats;
+infile 'c:\MyRawData\Boats.dat';
+input Name $ 1-12 Port $ 14-20 Locomotion $ 22-26 Type $ 28-30 Price 32-37 Length 39-41;
+run;
+* PROC TABULATE report with options;
+proc tabulate data = boats format = DOLLAR9.2;
+class Locomotion Type;
+var Price;
+table Locomotion ALL='All', MEAN*Price*(Type ALL='All') /BOX='Full Day Excursions' MISSTEXT='none';
+title;
+run;

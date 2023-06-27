@@ -1,0 +1,1 @@
+mtspf_ga.m是主函数，floyed  是计算任意两点最短路径的算法，myLength 是计算距离的函数，lujing是本例子中所需的数据，只需运行ceshide 即可完美解决“最佳灾情巡视路线问题”。

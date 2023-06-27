@@ -1,0 +1,2 @@
+load dj
+normplot(x)

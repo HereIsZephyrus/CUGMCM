@@ -1,0 +1,11 @@
+data heights;
+infile 'c:\MyRawData\GirlHeights.dat';
+input Region $ Height @@;
+run;
+* Use ANOVA to run one-way analysis of variance;
+proc anova data = heights;
+class Region;
+model Height = Region;
+means Region / SCHEFFE HOVTEST;
+title "Girls' Heights from Four Regions";
+run;

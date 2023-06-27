@@ -1,0 +1,12 @@
+data oldcars;
+infile 'c:\MyRawData\Auction.dat';
+input Make $ 1-13 Model $ 15-29 YearMade Seats MillionsPaid;
+if YearMade < 1890 then Veteran = 'Yes';
+if Model = 'F-88' then DO;
+   Make = 'Oldsmobile';
+   Seats = 2;
+end;
+run;
+proc print data = oldcars;
+title 'Cars Sold at Auction';
+run;

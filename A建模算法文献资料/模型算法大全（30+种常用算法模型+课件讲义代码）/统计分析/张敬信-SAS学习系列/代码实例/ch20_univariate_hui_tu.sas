@@ -1,0 +1,10 @@
+data class;
+infile 'c:\MyRawData\Scores.dat';
+input Score @@;
+run;
+proc univariate data = class;
+var Score;
+HISTOGRAM Score / NORMAL;
+PROBPLOT Score;
+title;
+run;

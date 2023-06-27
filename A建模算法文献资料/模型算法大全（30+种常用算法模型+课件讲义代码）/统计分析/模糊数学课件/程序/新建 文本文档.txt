@@ -1,0 +1,159 @@
+模糊聚类-matlab实现
+%%%%%%%%%%%%%%%模糊聚类%%%%%%%%%%%%%%%%%%%%%%%
+clear;
+load F:\从0开始\数据\data.txt;
+INPUTDATA=data;
+%--------原始数据标准化-------%
+disp('请选择原始数据标准化方式: ');
+disp('<1-总和标准化|2-标准差标准化|3-极大值标准化|4-极差标准化>');
+wayforstand=input('请输入: ');
+switch wayforstand
+    case 1,
+        DATAFORCLUS=standard_use_sum(INPUTDATA);
+    case 2,
+        DATAFORCLUS=standard_use_std(INPUTDATA);
+    case 3,
+        DATAFORCLUS=standard_use_max(INPUTDATA);
+    case 4,
+        DATAFORCLUS=standard_use_jc(INPUTDATA);
+    otherwise
+        error('您的输入不符合要求->执行结束!!!');
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%基于模糊等价关系的模糊聚类%%%%%%%%%%%%%%%%%%%%%%
+%----------构造相似关系-----------%
+numrows=size(DATAFORCLUS,1);
+numcols=size(DATAFORCLUS,2);
+disp('请选择对象之间相似性统计量的方式: ');
+disp('<1-相关系数法|2-夹角余弦法|3-指数相似系数法|4-绝对值指数法|5-算术平均最小法|6-最大最小值法|7-绝对值差数法|8-数量积法>');
+wayforr_ij=input('请输入: ');
+switch wayforr_ij
+    case 1, %-----------------------------------相关系数法
+        for i=1:numrows,
+            for j=1:numrows,
+                meani=mean(DATAFORCLUS(i,:));meanj=mean(DATAFORCLUS(j,:));           
+                simiR(i,j)=sum((DATAFORCLUS(i,:)-meani).*(DATAFORCLUS(j,:)-meanj))/...
+                (sqrt(sum((DATAFORCLUS(i,:)-meani).^2))*sqrt(sum((DATAFORCLUS(j,:)-meanj).^2)));   
+            end
+        end
+    case 2, %-----------------------------------夹角余弦法
+        for i=1:numrows,
+            for j=1:numrows,
+                simiR(i,j)=sum(DATAFORCLUS(i,:).*DATAFORCLUS(j,:))/...
+                (sqrt(sum(DATAFORCLUS(i,:).*DATAFORCLUS(i,:)))*sqrt(sum(DATAFORCLUS(j,:).*DATAFORCLUS(j,:))));
+            end
+        end
+    case 3, %-----------------------------------指数相似系数法
+
+    case 4, %-----------------------------------绝对值指数法
+
+    case 5, %-----------------------------------算术平均最小法
+      
+    case 6, %-----------------------------------最大最小值法
+   
+    case 7, %-----------------------------------绝对值差数法
+     
+    case 8, %-----------------------------------数量积法
+
+    otherwise
+         error('您的输入不符合要求->执行结束!!!');
+end
+%-------改造成等价关系----------%
+sign=0;
+numselfmul=1;
+simiRk=eye(numrows);
+equi_tem=simiR;
+while sign==0,
+    for i=1:numrows,
+        for j=1:numrows,
+            for c=1:numrows,
+            rij_temp(c)=min([equi_tem(i,c) equi_tem(c,j)]);
+            end
+            simiRk(i,j)=max(rij_temp);
+        end
+    end     
+    %--------------%
+    if sum(sum(simiRk-equi_tem,1))~=0,
+        numselfmul=numselfmul+1;
+        equi_tem=simiRk;
+    else
+        sign=1;
+        break
+    end
+    %--------------%
+end
+if sign==1,
+    disp('从相似矩阵到等价矩阵改造成功!!!');
+else
+    disp('从相似矩阵到等价矩阵改造失败!!!');
+end
+equiR=simiRk;
+numclass=input('请输入聚类数:  ');
+
+%---------在不同的截集水平进行聚类--------------%
+clasc=0;
+comp_vec(1,1:numrows)=0;
+index=0;
+clasc=0;
+tip=0;
+alpha=0;
+temnumeachclass=0;
+while (tip==0),
+    %alpha=input('请输入进行分类的截集水平λ:  ');
+    %alpha=0.5;         %调试
+    if (alpha<0 || alpha>1),
+        error('您输入的截集水平λ不符合分类要求->执行结束!!!');
+    end
+    comp_arr=ones(numrows)*alpha;
+    result_arr=(equiR>=comp_arr);  %--------------------result_arr判断矩阵
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%捡菜算法
+    for i=1:numrows,
+        if sum(comp_vec(1,:)==result_arr(i,:))<numrows,  %-----------说明没有归类
+            temnumeachclass=0;
+            %numeachclass(clasc)=index-temnumeachclass;
+            temsave=result_arr(i,:);
+            for j=1:numrows,
+                if sum(result_arr(j,:)==temsave)==numrows,
+                    index=index+1;
+                    class(index)=j;                  
+                    result_arr(j,:)=0; %--------------------说明已经被归类
+                    temnumeachclass=temnumeachclass+1;
+                end
+            end
+            clasc=clasc+1;
+            nec(clasc)=temnumeachclass;
+            else
+            continue;
+        end  
+    end
+   
+    if clasc>=numclass,
+       tip=1; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%当模糊分类的数目小于等于所给出的类数时退出循环体
+       disp('成功!!!');
+    else
+       clear class;
+       clear numeachclass;
+       clear nec;
+       clasc=0;
+       index=0;
+       temnumeachclass=0;
+       alpha=alpha+0.01;
+    end
+end
+%----取聚类结果----%
+num=0;
+n=0;
+for i=1:clasc,
+    for j=1:nec(i),
+        num=num+1;
+        n=n+1;
+        CLUS(n,:)=INPUTDATA(class(num),:);
+    end
+    n=n+1;
+    CLUS(n,:)=inf;
+end
+%format single(CLUS)
+lenexport=size(CLUS,1);
+for i=1:lenexport,
+    RESULT(i,:)=sprintf('%15.2f',CLUS(i,:));
+end
+RESULT

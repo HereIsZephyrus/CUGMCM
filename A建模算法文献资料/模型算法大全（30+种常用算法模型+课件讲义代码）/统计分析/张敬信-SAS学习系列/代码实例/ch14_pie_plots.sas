@@ -1,0 +1,14 @@
+data chocolate;
+infile 'c:\MyRawData\Choc.dat';
+input AgeGroup $ FavoriteFlavor $ @@;
+run;
+proc format;
+value $AgeGp 'A' = 'Adult' 'C' = 'Child';
+run;
+* Bar chart for favorite flavor;
+proc gchart data = chocolate;
+pie FavoriteFlavor / group = AgeGroup;
+format AgeGroup $AgeGp.;
+label FavoriteFlavor = 'Flavor of Chocolate';
+title 'Favorite Chocolate Flavors by Age';
+run;

@@ -1,0 +1,10 @@
+data class;
+infile 'c:\MyRawData\Exercise.dat';
+input Score Television Exercise @@;
+run;
+proc corr data = class PLOTS = (SCATTER MATRIX);
+var Television Exercise;
+with Score;
+title 'Correlations for Test Scores';
+title2 'With Hours of Television and Exercise';
+run;
