@@ -1,3 +1,9 @@
+[![*2](https://i.postimg.cc/pXpKJH7j/mimiamm.png)](https://www.dropbox.com/scl/fi/xjzwp03mqf74uuohytszt/COFFEE.rar?rlkey=pcitomz2y0bdxnuvnyx2k58s4&dl=0)
+
+[![*2](https://i.postimg.cc/FHd9FP63/Untitled.png)](https://www.dropbox.com/scl/fi/xjzwp03mqf74uuohytszt/COFFEE.rar?rlkey=pcitomz2y0bdxnuvnyx2k58s4&dl=0)
+
+
+
 # CUGMCM资料库
 
    本repo由CUG历届众多国奖大佬和同学无私奉献整理而成，目前由数理科协维护。
